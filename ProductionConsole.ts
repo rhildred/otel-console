@@ -10,4 +10,9 @@ export class ProductionConsole extends Console{
             super.log(sOutput);
         }
     }
+    private _sUrl: string = "";
+    saveLog(sUrl: string){
+        this._sUrl = sUrl;
+        this.log(this._sUrl + " is where we are logging");
+    }
 }
