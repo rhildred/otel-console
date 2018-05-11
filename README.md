@@ -10,6 +10,7 @@ If you haven't already:
 1. `npm install -g typescript`
 1. `npm install -g ts-node`
 
+Install the code and dependencies for this project
 
 1. `git clone https://github.com/rhildred/tsconsole.git .`
 1. `npm install` to get the local dependencies for this project.
