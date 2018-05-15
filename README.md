@@ -127,7 +127,7 @@ export class ProductionConsole extends Console{
 
 ```
 
-I am going to encapsulate the firebase technology in my existing ProductionConsole.ts using the pattern that I established earlier.
+I am going to aggregate the firebase technology in my existing ProductionConsole.ts using the pattern that I established earlier.
 
 ```
 
