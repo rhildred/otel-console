@@ -1,5 +1,5 @@
-import firebase = require("firebase-admin");
 import { Console } from './index';
+import firebase = require("firebase-admin");
 import * as url from "url";
 
 export class ProductionConsole extends Console {

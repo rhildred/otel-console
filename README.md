@@ -106,4 +106,81 @@ export class ProductionConsole extends Console{
 
 ## Saving logs on the cloud with Firebase
 
-"I don't always write code but when I do it always works on my machine." (The most interesting coder in the world) Seriously, I need a way to debug my code when it is running in production and users find new and interesting ways to break it.
+"I don't always write code but when I do it always works on my machine." (The most interesting coder in the world) Seriously, I need a way to debug my code when it is running in production and users find new and interesting ways to break it. To do this I will set up a folder in a [firebase realtime database](https://console.firebase.google.com/) called logs. I will write messages in the folder that look like this:
+
+```
+
+{
+    "-LC_Ebrb0gYX_5cl3r35": {
+        "message": "Firebase initialized",
+        "timestamp": "2018-05-15T19:19:44.354Z"
+    },
+    "-LC_EdeI5xai-QqGSlBL": {
+        "message": "Hello World",
+        "timestamp": "2018-05-15T19:19:51.699Z"
+    },
+    "-LC_EeKG893230dqeMsf": {
+        "message": "You input 5",
+        "timestamp": "2018-05-15T19:19:54.449Z"
+    }
+}
+
+```
+
+I am going to encapsulate the firebase technology in my existing ProductionConsole.ts using the pattern that I established earlier.
+
+```
+
+import firebase = require("firebase-admin");
+import * as url from "url";
+
+```
+
+These get firebase and url into my code. Then I update the package.json to include the implementing node module.
+
+```
+  "dependencies": {
+    "@types/node": "^10.0.8",
+    "@types/readline-sync": "^1.4.3",
+    "firebase-admin": "^5.12.0",
+    "readline-sync": "^1.4.9"
+  }
+
+
+```
+
+I use the url module to split the host and path for initializing firebase:
+
+```
+
+    private _oUrl!: any;
+    private _oRef!: firebase.database.Reference;
+    log(sOutput: string) {
+        if (this._bLogging) {
+            super.log(sOutput);
+        }
+        if(this._oUrl) {
+            this._oRef.push({message: sOutput, 
+                timestamp: new Date().toISOString()})
+        }
+    }
+    saveLog(sUrl: string) {
+        this._oUrl = url.parse(sUrl);
+        let serviceAccount = require("./privatekey.json");
+
+        firebase.initializeApp({
+            credential: firebase.credential.cert(serviceAccount),
+            databaseURL: this._oUrl.protocol + "//" + this._oUrl.host
+        });
+
+
+        let db = firebase.database();
+
+        this._oRef = db.ref(this._oUrl.pathname);
+
+        this.log("Firebase initialized");
+    }
+
+```
+
+Now when I run my code, I see the message "Firebase initialized" in both the console and the firebase. Next events!
