@@ -62,4 +62,48 @@ export class ProductionConsole extends Console{
 
 ```
 
-Now we can instantiate a `ProductionConsole` and `readLine` and `log` with it. The production console gets those
+
+Now we can instantiate a `ProductionConsole` and `readLine` and `log` with it. The production console gets those methods by inheriting from the Console class.
+
+## Polymorphism
+
+Inheritance is also called specialization. Our production console is a special console that only logs if we aren't in production.
+We will override the `log(sOut :string)` method to have the desired new functionality.
+
+```
+
+    log(sOutput: string){
+        if(this._bLogging){
+            super.log(sOutput);
+        }
+    }
+
+
+```
+
+## Encapsulation
+
+A long with the overridden log method we also need to add a way to turn logging on and off. We add that to the object as well as a private attribute `_bLogging `. If we change the implementation consumers of the object don't need to change. This is called encapsulation.
+
+
+```
+
+import {Console} from './index' ;
+
+export class ProductionConsole extends Console{
+    private _bLogging :boolean = false;
+    logging(bLogging : boolean){
+        this._bLogging = bLogging;
+    }
+    log(sOutput: string){
+        if(this._bLogging){
+            super.log(sOutput);
+        }
+    }
+}
+
+```
+
+## Saving logs on the cloud with Firebase
+
+"I don't always write code but when I do it always works on my machine." (The most interesting coder in the world) Seriously, I need a way to debug my code when it is running in production and users find new and interesting ways to break it.
