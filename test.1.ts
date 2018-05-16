@@ -1,4 +1,4 @@
-import {ProductionConsole} from './ProductionConsole' ;
+import {ProductionConsole} from './index' ;
 
 let console: ProductionConsole = new ProductionConsole();
 
