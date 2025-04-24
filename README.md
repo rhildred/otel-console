@@ -1,51 +1,43 @@
-# <a href="https://github.com/rhildred/tsconsole" target="_blank">tsconsole</a>
+# <a href="https://github.com/rhildred/otel-console" target="_blank">otel-console</a>
 
-To run this:
+TLDR:
 
-If you haven't already:
+```
+npm install otel-console
+```
 
-1. install git <a href="https://git-scm.com/downloads" target="_blank">from here.</a>
-1. install vscode <a href="https://code.visualstudio.com/download" target="_blank">from here.</a>
-1. install node.js <a href="https://nodejs.org/en/download/" target="_blank">from here.</a>
-1. `npm install -g typescript`
-1. `npm install -g ts-node`
+```javascript
+import {Console} from "otel-console";
 
-Install the code and dependencies for this project
+const console = new Console();
+const name = console.readLine("What is your name? ");
 
-1. `git clone https://github.com/rhildred/tsconsole.git .`
-1. `npm install` to get the local dependencies for this project.
+console.log(`Hello ${name}`)
+```
+
+I did this for an object oriented Javascript class. Students really wanted to have an input method like python. I am refreshing this to add otel collecting in the specialization. In 2018 I used firebase for this, in 2025 my career has moved to include distributed systems. Otel seems like a good strategy.
 
 ## Aggregation
 
-We made a new object to replace the javascript window.console. This object has 2 methods `readLine(sPrompt: string)` and `log(sOut :string)`. These methods use 2 static classes from npm, readline-sync and fs for getting console input and synchronously writing to stdout (file handle 1).
+We made a new object to replace the javascript window.console. This object has 2 methods `readLine(sPrompt: string)` and `log(...sOut :any)`. The readLine method uses a static class from npm, readline-sync for getting console input.
 
 ```
 
-import readlineSync = require('readline-sync');
-import * as fs from 'fs';
+import readlineSync from "readline-sync";
 
 export class Console{
-    log(sOut : string){
-        fs.writeSync(1, sOut + "\n");
+    log( ...sOut : any){
+        console.log(...sOut);
     }
     readLine(sPrompt: string): string{
         return readlineSync.question(sPrompt);
     }
 }
 
+
 ```
 
 To use these objects we import them at the start of the file. As well as importing them  we need to tell npm to resolve the dependency in the package.json file:
-
-```
-
-  "dependencies": {
-    "@types/node": "^10.0.8",
-    "@types/readline-sync": "^1.4.3",
-    "readline-sync": "^1.4.9"
-  }
-
-```
 
 The general pattern for aggregation from npm is to add the dependency and import it into the source file.
 
@@ -83,7 +75,7 @@ We will override the `log(sOut :string)` method to have the desired new function
 
 ## Encapsulation
 
-A long with the overridden log method we also need to add a way to turn logging on and off. We add that to the object as well as a private attribute `_bLogging `. If we change the implementation consumers of the object don't need to change. This is called encapsulation.
+Along with the overridden log method we also need to add a way to turn logging on and off. We add that to the object as well as a private attribute `_bLogging `. If we change the implementation consumers of the object don't need to change. This is called encapsulation.
 
 
 ```
@@ -104,83 +96,6 @@ export class ProductionConsole extends Console{
 
 ```
 
-## Saving logs on the cloud with Firebase
+If you are reading this, thanks. Next I am planning on getting this working with an express app on open telemetry. The original idea was to use firebase to log from the browser. I guess I can expose the otel collector to the internet, but right now I am thinking that the use case for this would be a full stack custom element. The front end would be preact-custom-element and the back end would be an express app.
 
-"I don't always write code but when I do it always works on my machine." (The most interesting coder in the world) Seriously, I need a way to debug my code when it is running in production and users find new and interesting ways to break it. To do this I will set up a folder in a [firebase realtime database](https://console.firebase.google.com/) called logs. I will write messages in the folder that look like this:
-
-```
-
-{
-    "-LC_Ebrb0gYX_5cl3r35": {
-        "message": "Firebase initialized",
-        "timestamp": "2018-05-15T19:19:44.354Z"
-    },
-    "-LC_EdeI5xai-QqGSlBL": {
-        "message": "Hello World",
-        "timestamp": "2018-05-15T19:19:51.699Z"
-    },
-    "-LC_EeKG893230dqeMsf": {
-        "message": "You input 5",
-        "timestamp": "2018-05-15T19:19:54.449Z"
-    }
-}
-
-```
-
-I am going to aggregate the firebase technology in my existing ProductionConsole.ts using the pattern that I established earlier.
-
-```
-
-import firebase = require("firebase-admin");
-import * as url from "url";
-
-```
-
-These get firebase and url into my code. Then I update the package.json to include the implementing node module.
-
-```
-  "dependencies": {
-    "@types/node": "^10.0.8",
-    "@types/readline-sync": "^1.4.3",
-    "firebase-admin": "^5.12.0",
-    "readline-sync": "^1.4.9"
-  }
-
-
-```
-
-I use the url module to split the host and path for initializing firebase:
-
-```
-
-    private _oUrl!: any;
-    private _oRef!: firebase.database.Reference;
-    log(sOutput: string) {
-        if (this._bLogging) {
-            super.log(sOutput);
-        }
-        if(this._oUrl) {
-            this._oRef.push({message: sOutput, 
-                timestamp: new Date().toISOString()})
-        }
-    }
-    saveLog(sUrl: string) {
-        this._oUrl = url.parse(sUrl);
-        let serviceAccount = require("./privatekey.json");
-
-        firebase.initializeApp({
-            credential: firebase.credential.cert(serviceAccount),
-            databaseURL: this._oUrl.protocol + "//" + this._oUrl.host
-        });
-
-
-        let db = firebase.database();
-
-        this._oRef = db.ref(this._oUrl.pathname);
-
-        this.log("Firebase initialized");
-    }
-
-```
-
-Now when I run my code, I see the message "Firebase initialized" in both the console and the firebase. Next events!
+Stay Tuned.
