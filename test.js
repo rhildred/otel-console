@@ -1,6 +1,6 @@
-import {Console} from "./lib/main";
+import {Console} from "./dist/Console.js";
 
-let console: Console = new Console();
+let console = new Console();
 
 console.log("Hello World");
 
