@@ -1,6 +1,6 @@
 {
   "name": "otel-console",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a console object with readline can be hacked for otel logging",
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "types": "./dist/Console.d.ts",
+      "import": "./dist/Console.js",
+      "require": "./dist/Console.cjs"
     },
     "./package.json": "./package.json"
   },
