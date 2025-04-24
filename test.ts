@@ -1,4 +1,4 @@
-import {Console} from './index' ;
+import {Console} from "./lib/main";
 
 let console: Console = new Console();
 

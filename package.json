@@ -1,21 +1,30 @@
 {
   "name": "tsconsole",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "a console object with readline can be hacked for otel logging",
+  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build",
+    "preview": "vite-node test.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/tsconsole.cjs",
+  "module": "./dist/tsconsole.js",
+  "exports": {
+    ".": {
+      "import": "./dist/tsconsole.js",
+      "require": "./dist/tsconsole.cjs"
+    }
+  },
   "devDependencies": {
-    "ts-node": "^6.0.3",
-    "typescript": "^2.8.3"
+    "vite": "^6.3.3",
+    "vite-node": "^3.1.2",
+    "vite-plugin-node-polyfills": "^0.23.0",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
-    "firebase-admin": "^5.12.0",
-    "readline-sync": "^1.4.9"
+    "readline-sync": "^1.4.10"
   }
 }
